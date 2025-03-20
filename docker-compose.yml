@@ -1,0 +1,24 @@
+version: '3'
+services:
+  bot:
+    build: .
+    environment:
+      - TELEGRAM_TOKEN=your-telegram-bot-token
+      - OPENAI_API_KEY=your-openai-api-key
+      - MISTRAL_API_KEY=your-mistral-api-key  
+      - DATABASE_URL=postgresql://user:password@db:5432/dbname
+    depends_on:
+      - db
+      - redis
+  db:
+    image: postgres:17
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: dbname
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+  redis:
+    image: redis:alpine
+volumes:
+  postgres_data:

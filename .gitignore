@@ -1,0 +1,15 @@
+venv/
+.venv/
+env/
+TEST
+RAG.pyc
+blog.py
+db.sqlite3
+
+# Игнорировать кэш Python
+__pycache__/
+*.pyc
+
+# Игнорировать IDE-специфичные файлы
+.idea/
+.vscode/
