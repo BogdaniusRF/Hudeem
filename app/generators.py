@@ -2,6 +2,7 @@ import asyncio
 import httpx
 from mistralai import Mistral
 from openai import AsyncOpenAI, completions
+
 import os
 from dotenv import load_dotenv
 from openai.types import model
@@ -9,15 +10,18 @@ from openai.types import model
 
 #model="gpt-4o-mini"
 load_dotenv()
-openai_api_key=os.getenv("OPENAI_API_KEY")
-proxy=os.getenv("SpaceProxy")
-client = AsyncOpenAI(
-    api_key=openai_api_key,
+OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
+PROXY = os.getenv("SpaceProxy")
+
+if not OPENAI_API_KEY:
+    raise ValueError("OPENAI_API_KEY не найден в переменных окружения")
+
+# Инициализация клиента OpenAI с прокси
+openai_client = AsyncOpenAI(
+    api_key=OPENAI_API_KEY,
     http_client=httpx.AsyncClient(
-        transport=httpx.HTTPTransport(
-            local_address="0.0.0.0",
-            proxy=proxy  # Передаём прокси в transport
-        )
+        transport=httpx.AsyncHTTPTransport(local_address="0.0.0.0"),
+        proxy=PROXY  # Используем 'proxy' вместо 'proxies'
     )
 )
 
@@ -60,7 +64,7 @@ async def gpt_embed(req):
 #####################  For OpenAi testing ##################
 async def gpt_openai(req, model):
 
-    completion = await client.chat.completions.create(
+    completion = await openai_client.chat.completions.create(
         messages=[{"role": "user", "content": req}],
         model=model
     )
